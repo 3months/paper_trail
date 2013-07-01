@@ -62,7 +62,7 @@ module PaperTrail
         has_many self.versions_association_name,
                  lambda { |_model| order("#{PaperTrail.timestamp_field} ASC") },
                  :class_name => self.version_class_name, :as => :item
-                 
+
         after_create  :record_create, :if => :save_version? if !options[:on] || options[:on].include?(:create)
         before_update :record_update, :if => :save_version? if !options[:on] || options[:on].include?(:update)
         after_destroy :record_destroy, :if => :save_version? if !options[:on] || options[:on].include?(:destroy)
@@ -265,7 +265,7 @@ module PaperTrail
         end
         previous.tap do |prev|
           prev.id = id
-          changed_attributes.each { |attr, before| prev[attr] = before }
+          changed_attributes.except(*self.class.paper_trail_options[:skip]).each { |attr, before| prev[attr] = before }
         end
       end
 
